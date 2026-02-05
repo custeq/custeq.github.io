@@ -1,0 +1,130 @@
+:root{
+  --bg: #0b0f14;
+  --card: #101722;
+  --text: #e8eef6;
+  --muted: #a9b6c7;
+  --line: rgba(232, 238, 246, 0.12);
+  --accent: #7bd3ff;
+  --warn: #ffd27b;
+  --shadow: 0 16px 40px rgba(0,0,0,.35);
+  --radius: 18px;
+  --maxw: 920px;
+}
+
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  line-height: 1.55;
+  color: var(--text);
+  background:
+    radial-gradient(1000px 600px at 10% 0%, rgba(123, 211, 255, 0.10), transparent 55%),
+    radial-gradient(900px 600px at 90% 10%, rgba(255, 210, 123, 0.08), transparent 60%),
+    var(--bg);
+}
+
+.container{
+  width: min(var(--maxw), calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.site-header{
+  padding: 42px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.kicker{
+  margin: 0 0 10px;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+h1{
+  margin: 0;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.subtitle{
+  margin: 10px 0 0;
+  color: var(--muted);
+  max-width: 72ch;
+}
+
+main{
+  padding: 26px 0 56px;
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 22px;
+  margin: 18px 0;
+}
+
+h2{
+  margin: 0 0 14px;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+h3{
+  margin: 18px 0 8px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+p{ margin: 10px 0; }
+
+.muted{ color: var(--muted); }
+
+.bullets{
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.bullets li{
+  margin: 6px 0;
+}
+
+.callout{
+  border: 1px solid rgba(123, 211, 255, 0.30);
+  background: rgba(123, 211, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 14px;
+  margin: 14px 0 10px;
+}
+
+.callout-title{
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.callout.warn{
+  border-color: rgba(255, 210, 123, 0.35);
+  background: rgba(255, 210, 123, 0.10);
+}
+
+.callout.warn .callout-title{ color: var(--warn); }
+
+.site-footer{
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+}
+
+a{ color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ scroll-behavior: auto !important; }
+}
