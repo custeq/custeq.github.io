@@ -163,6 +163,26 @@ a{ color: var(--accent); }
   display: block;
 }
 
+.video-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.video-item iframe {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  border: none;
+  border-radius: calc(var(--radius) - 4px);
+}
+
 @media (prefers-reduced-motion: reduce){
   *{ scroll-behavior: auto !important; }
 }
