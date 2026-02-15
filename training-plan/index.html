@@ -146,36 +146,15 @@
       <h2 id="video-title">Видео демонстрация</h2>
 
       <div class="tabs">
-        <button class="tab-btn active" data-tab="youtube">YouTube</button>
-        <button class="tab-btn" data-tab="vk">VK</button>
+        <button class="tab-btn active" data-tab="vk">VK</button>
+        <button class="tab-btn" data-tab="youtube">YouTube</button>
       </div>
 
-      <div id="youtube" class="tab-content active">
+      <div id="vk" class="tab-content active" >
         <div class="video-grid">
           <div class="video-item">
             <iframe
-                    src="https://www.youtube.com/embed/VpdooZN1hJA?rel=0&modestbranding=1&playsinline=1"
-                    title="Unlevel Edge Training 1"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen>
-            </iframe>
-          </div>
-          <div class="video-item">
-            <iframe
-                    src="https://www.youtube.com/embed/UYpZ0PcpcTs?rel=0&modestbranding=1&playsinline=1"
-                    title="Unlevel Edge Training 2"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen>
-            </iframe>
-          </div>
-        </div>
-      </div>
-
-      <div id="vk" class="tab-content">
-        <div class="video-grid">
-          <div class="video-item">
-            <iframe
-                    src="https://vk.com/video_ext.php?oid=-235478904&id=456239018&hd=2"
+                    data-src="https://vk.com/video_ext.php?oid=-235478904&id=456239018&hd=2"
                     title="Unlevel Edge VK 1"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowfullscreen>
@@ -183,8 +162,29 @@
           </div>
           <div class="video-item">
             <iframe
-                    src="https://vk.com/video_ext.php?oid=-235478904&id=456239019&hd=2"
+                    data-src="https://vk.com/video_ext.php?oid=-235478904&id=456239019&hd=2"
                     title="Unlevel Edge VK 2"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      <div id="youtube" class="tab-content">
+        <div class="video-grid">
+          <div class="video-item">
+            <iframe
+                    data-src="https://www.youtube.com/embed/VpdooZN1hJA?rel=0&modestbranding=1&playsinline=1"
+                    title="Unlevel Edge Training 1"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-item">
+            <iframe
+                    data-src="https://www.youtube.com/embed/UYpZ0PcpcTs?rel=0&modestbranding=1&playsinline=1"
+                    title="Unlevel Edge Training 2"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowfullscreen>
             </iframe>
@@ -213,20 +213,63 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // Lazy load iframes using Intersection Observer
+    const iframeObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const iframe = entry.target;
+          if (iframe.dataset.src && !iframe.src) {
+            iframe.src = iframe.dataset.src;
+          }
+          // We don't necessarily want to unobserve because we might unload on tab switch
+          // and need to reload if it comes back into viewport? 
+          // Actually, if it's in an active tab, we want it loaded. 
+          // If we switch tabs, we unload it manually.
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    function loadIframes(container) {
+      container.querySelectorAll('iframe[data-src]').forEach(iframe => {
+        iframeObserver.observe(iframe);
+      });
+    }
+
+    function unloadIframes(container) {
+      container.querySelectorAll('iframe').forEach(iframe => {
+        iframeObserver.unobserve(iframe);
+        iframe.removeAttribute('src');
+      });
+    }
+
     // Tab switching logic
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const tabId = btn.getAttribute('data-tab');
+        const targetContent = document.getElementById(tabId);
         
         // Update buttons
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
         // Update content
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => {
+          if (c.id === tabId) {
+            c.classList.add('active');
+            loadIframes(c);
+          } else {
+            c.classList.remove('active');
+            unloadIframes(c);
+          }
+        });
       });
     });
+
+    // Initial load for active tab
+    const activeTab = document.querySelector('.tab-content.active');
+    if (activeTab) {
+      loadIframes(activeTab);
+    }
   </script>
 </body>
 </html>
