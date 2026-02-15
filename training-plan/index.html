@@ -218,27 +218,28 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const iframe = entry.target;
-          if (iframe.dataset.src && !iframe.src) {
+          if (iframe.dataset.src && !iframe.hasAttribute('src')) {
             iframe.src = iframe.dataset.src;
+            observer.unobserve(iframe);
           }
-          // We don't necessarily want to unobserve because we might unload on tab switch
-          // and need to reload if it comes back into viewport? 
-          // Actually, if it's in an active tab, we want it loaded. 
-          // If we switch tabs, we unload it manually.
         }
       });
     }, { rootMargin: '200px' });
 
     function loadIframes(container) {
       container.querySelectorAll('iframe[data-src]').forEach(iframe => {
-        iframeObserver.observe(iframe);
+        if (!iframe.hasAttribute('src')) {
+          iframeObserver.observe(iframe);
+        }
       });
     }
 
     function unloadIframes(container) {
       container.querySelectorAll('iframe').forEach(iframe => {
         iframeObserver.unobserve(iframe);
-        iframe.removeAttribute('src');
+        if (iframe.hasAttribute('src')) {
+          iframe.removeAttribute('src');
+        }
       });
     }
 
@@ -246,8 +247,7 @@
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const tabId = btn.getAttribute('data-tab');
-        const targetContent = document.getElementById(tabId);
-        
+        document.getElementById(tabId);
         // Update buttons
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
